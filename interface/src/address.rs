@@ -1,3 +1,4 @@
+use core::convert::From;
 use core::mem::{size_of, transmute_copy};
 use core::ops::Add;
 
@@ -23,6 +24,12 @@ impl Address {
 
     pub fn one() -> Self {
         Self(1)
+    }
+}
+
+impl From<Address> for u128 {
+    fn from(other: Address) -> Self {
+        other.0
     }
 }
 

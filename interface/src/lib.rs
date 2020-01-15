@@ -1,10 +1,11 @@
 #![no_std]
 
+mod account;
 mod address;
 mod blob;
-pub mod number;
 mod transaction;
 
+pub use account::Account;
 pub use address::Address;
 pub use blob::RawBlob;
 pub use transaction::Transaction;

@@ -1,5 +1,5 @@
 use crate::{
-    error::{Error, ERR, OK},
+    error::{Error, OK},
     Address,
 };
 use arrayref::array_ref;

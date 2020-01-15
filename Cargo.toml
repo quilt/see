@@ -5,6 +5,8 @@ authors = ["Matt Garnett <matt.garnett@me.com>"]
 edition = "2018"
 
 [dependencies]
-oof = { path = "../oof" }
 bonsai = { path = "../bonsai", default-features = false, features = ["u128"] }
 interface = { path = "interface" }
+oof = { path = "../oof" }
+proof = { path = "proof" }
+
