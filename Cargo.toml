@@ -7,3 +7,4 @@ edition = "2018"
 [dependencies]
 oof = { path = "../oof" }
 bonsai = { path = "../bonsai", default-features = false, features = ["u128"] }
+interface = { path = "interface" }
