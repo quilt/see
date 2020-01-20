@@ -1,11 +1,13 @@
 #![no_std]
 
+extern crate alloc;
+
 mod account;
 mod address;
 mod blob;
 mod transaction;
 
-pub use account::Account;
+pub use account::{Account, RefAccount};
 pub use address::Address;
 pub use blob::RawBlob;
 pub use transaction::Transaction;
