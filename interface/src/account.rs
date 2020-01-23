@@ -1,6 +1,13 @@
+use crate::crypto::PublicKey;
 use bonsai::subtree_index_to_general;
 use oof::Oof;
+use proof::RefNode;
+
+#[cfg(feature = "generate")]
 use proof::Provable;
+
+#[cfg(feature = "generate")]
+use arborist::Tree;
 
 const BALANCE_IDX: u128 = 5;
 const NONCE_IDX: u128 = 6;
@@ -13,7 +20,29 @@ const PUBKEY_2_IDX: u128 = 9;
 pub struct Account {
     pub balance: u64,
     pub nonce: u64,
-    pub pubkey: [u8; 48],
+    pub pubkey: PublicKey,
+}
+
+// BEGIN derived code
+#[cfg(feature = "generate")]
+impl Provable for Account {
+    fn to_tree(self) -> Tree {
+        let mut map = Tree::new();
+
+        map.insert(BALANCE_IDX, make_value(&self.balance.to_le_bytes()));
+        map.insert(NONCE_IDX, make_value(&self.nonce.to_le_bytes()));
+        map.insert(PUBKEY_1_IDX, make_value(&self.pubkey.0[0..32]));
+        map.insert(PUBKEY_2_IDX, make_value(&self.pubkey.0[32..48]));
+        map.insert(PADDING_IDX, [0; 32]);
+
+        map
+    }
+}
+
+fn make_value(val: &[u8]) -> [u8; 32] {
+    let mut buf = [0; 32];
+    buf[0..val.len()].copy_from_slice(val);
+    buf
 }
 
 pub struct RefAccount {
@@ -76,38 +105,19 @@ impl RefAccount {
     }
 }
 
-impl Provable for RefAccount {
+impl RefNode for RefAccount {
     fn new(idx: u128, backend: *mut Oof) -> Self {
         Self { idx, backend }
     }
 }
+// END derived code
 
 #[cfg(test)]
 mod test {
     use super::*;
-    use alloc::collections::BTreeMap;
+
     use arrayref::array_ref;
     use oof::hash::hash;
-
-    fn make_value(val: &[u8]) -> [u8; 32] {
-        let mut buf = [0; 32];
-        buf[0..val.len()].copy_from_slice(val);
-        buf
-    }
-
-    impl Account {
-        fn to_map(self) -> BTreeMap<u128, [u8; 32]> {
-            let mut map = BTreeMap::default();
-
-            map.insert(BALANCE_IDX, make_value(&self.balance.to_le_bytes()));
-            map.insert(NONCE_IDX, make_value(&self.nonce.to_le_bytes()));
-            map.insert(PUBKEY_1_IDX, make_value(&self.pubkey[0..32]));
-            map.insert(PUBKEY_2_IDX, make_value(&self.pubkey[32..48]));
-            map.insert(PADDING_IDX, [0; 32]);
-
-            map
-        }
-    }
 
     #[test]
     fn test() {

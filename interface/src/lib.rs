@@ -5,6 +5,7 @@ extern crate alloc;
 mod account;
 mod address;
 mod blob;
+pub mod crypto;
 mod transaction;
 
 pub use account::{Account, RefAccount};

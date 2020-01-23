@@ -8,4 +8,15 @@ edition = "2018"
 arrayref = "0.3.5"
 bonsai = { path = "../../bonsai", default-features = false, features = ["u128"] }
 oof = { path = "../../oof" }
+
+[target.'cfg(feature = "generate")'.dependencies]
+proof = { path = "../proof", features = ["generate"] }
+
+[target.'cfg(not(feature = "generate"))'.dependencies]
 proof = { path = "../proof" }
+
+arborist = { path = "../../arborist", optional = true }
+
+[features]
+default = []
+generate = ["arborist"]

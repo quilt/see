@@ -6,3 +6,4 @@ edition = "2018"
 
 [dependencies]
 interface = { path = "../interface" }
+proof = { path = "../proof", features = ["generate"] }

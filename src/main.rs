@@ -3,21 +3,19 @@
 
 use interface::{
     error::{Error, OK},
-    Account, RawBlob, Transaction,
+    RawBlob, RefAccount, Transaction,
 };
 use proof::{
     number::{Number, U4},
     List,
 };
 
-type Root = [u8; 32];
-
 #[no_mangle]
 pub extern "C" fn main() {}
 
-pub fn entry(blob: &mut [u8], pre: Root) {
+pub fn entry(blob: &mut [u8], pre: [u8; 32]) {
     let mut blob = RawBlob::new(blob);
-    let mut db = List::<Account, U4>::from_raw(blob.raw_proof());
+    let mut db = List::<RefAccount, U4>::from_raw(blob.raw_proof());
     db.verify(&pre);
 
     let txs = blob.transactions();

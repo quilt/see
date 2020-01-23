@@ -27,8 +27,14 @@ impl Address {
     }
 }
 
+impl From<u128> for Address {
+    fn from(other: u128) -> Address {
+        Address(other)
+    }
+}
+
 impl From<Address> for u128 {
-    fn from(other: Address) -> Self {
+    fn from(other: Address) -> u128 {
         other.0
     }
 }

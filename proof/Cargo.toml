@@ -5,6 +5,17 @@ authors = ["Matt Garnett <matt.garnett@me.com>"]
 edition = "2018"
 
 [dependencies]
+arborist = { path = "../../arborist" }
 bonsai = { path = "../../bonsai", default-features = false, features = ["u128"] }
+
+[target.'cfg(feature = "generate")'.dependencies]
+oof = { path = "../../oof", features = ["generate"] }
+
+[target.'cfg(not(feature = "generate"))'.dependencies]
 oof = { path = "../../oof" }
+
+
+[features]
+default = []
+generate = []
 
