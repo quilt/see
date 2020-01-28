@@ -5,5 +5,10 @@ authors = ["Matt Garnett <matt.garnett@me.com>"]
 edition = "2018"
 
 [dependencies]
-interface = { path = "../interface" }
+arrayref = "0.3.5"
+interface = { path = "../interface", features = ["generate"] }
+
 proof = { path = "../proof", features = ["generate"] }
+
+[dev-dependencies]
+oof = { path = "../../oof" }

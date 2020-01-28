@@ -48,12 +48,13 @@ impl<T: Provable, N: Number> List<T, N> {
     }
 
     pub fn get(&self, idx: Index) -> Option<&T> {
-        assert!(idx < N::val() as u128);
+        assert!(idx < 2u128.pow(N::val() as u32));
         self.backend.get(&idx)
     }
 
     pub fn insert(&mut self, idx: Index, val: T) -> Option<T> {
-        assert!(idx < N::val() as u128);
+        assert!(idx < 2u128.pow(N::val() as u32));
+        println!("inserting: {}", idx);
         self.backend.insert(idx, val)
     }
 
@@ -61,9 +62,12 @@ impl<T: Provable, N: Number> List<T, N> {
         let mut tree = Tree::new();
 
         for (k, v) in self.backend {
-            tree.insert_subtree(k, v.to_tree());
+            tree.insert_subtree(k + 2u128.pow(N::val() as u32), v.to_tree());
         }
 
+        tree.fill_subtree(1, N::val() as u32, &[0; 32]);
+        let tree = tree.trim();
+        println!("{:?}", tree.keys());
         Oof::from_map(tree.into())
     }
 }
@@ -126,11 +130,20 @@ pub mod number {
         fn val() -> usize;
     }
 
-    pub struct U4;
+    macro_rules! make_num {
+        ($name:ident, $val:expr) => {
+            pub struct $name;
 
-    impl Number for U4 {
-        fn val() -> usize {
-            4
-        }
+            impl Number for $name {
+                fn val() -> usize {
+                    $val
+                }
+            }
+        };
     }
+
+    make_num!(U2, 2);
+    make_num!(U3, 3);
+    make_num!(U4, 4);
+    make_num!(U5, 5);
 }

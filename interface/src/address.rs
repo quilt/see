@@ -5,7 +5,8 @@ use core::ops::Add;
 const LEN: usize = size_of::<u128>();
 
 #[repr(packed)]
-#[derive(Clone, Copy)]
+#[cfg_attr(test, derive(Debug))]
+#[derive(Clone, Copy, Debug)]
 pub struct Address(u128);
 
 impl Address {

@@ -9,12 +9,16 @@ use proof::Provable;
 #[cfg(feature = "generate")]
 use arborist::Tree;
 
+const PUBKEY_ROOT_IDX: u128 = 4;
 const BALANCE_IDX: u128 = 5;
 const NONCE_IDX: u128 = 6;
 #[allow(dead_code)]
 const PADDING_IDX: u128 = 7;
-const PUBKEY_1_IDX: u128 = 8;
-const PUBKEY_2_IDX: u128 = 9;
+const PUBKEY_1_IDX: u128 = 16;
+const PUBKEY_2_IDX: u128 = 17;
+const PUBKEY_3_IDX: u128 = 18;
+#[allow(dead_code)]
+const PUBKEY_PADDING: u128 = 19;
 
 #[derive(Clone)]
 pub struct Account {
@@ -32,13 +36,19 @@ impl Provable for Account {
         map.insert(BALANCE_IDX, make_value(&self.balance.to_le_bytes()));
         map.insert(NONCE_IDX, make_value(&self.nonce.to_le_bytes()));
         map.insert(PUBKEY_1_IDX, make_value(&self.pubkey.0[0..32]));
-        map.insert(PUBKEY_2_IDX, make_value(&self.pubkey.0[32..48]));
+        map.insert(PUBKEY_2_IDX, make_value(&self.pubkey.0[32..64]));
+        map.insert(PUBKEY_3_IDX, make_value(&self.pubkey.0[64..65]));
+        map.insert(PUBKEY_PADDING, [0; 32]);
         map.insert(PADDING_IDX, [0; 32]);
+
+        map.fill_subtree(PUBKEY_ROOT_IDX, 2, &[0; 32]);
+        map.fill_subtree(1, 2, &[0; 32]);
 
         map
     }
 }
 
+#[cfg(feature = "generate")]
 fn make_value(val: &[u8]) -> [u8; 32] {
     let mut buf = [0; 32];
     buf[0..val.len()].copy_from_slice(val);
@@ -78,7 +88,7 @@ impl RefAccount {
         Oof::set(unsafe { &mut *self.backend }, self.nonce_key(), buf);
     }
 
-    pub fn pubkey(&self) -> [u8; 48] {
+    pub fn pubkey(&self) -> [u8; 65] {
         let bytes_0 = Oof::get(
             unsafe { &*self.backend },
             &subtree_index_to_general(self.idx, PUBKEY_1_IDX),
@@ -89,10 +99,16 @@ impl RefAccount {
             &subtree_index_to_general(self.idx, PUBKEY_2_IDX),
         )
         .unwrap();
+        let bytes_2 = Oof::get(
+            unsafe { &*self.backend },
+            &subtree_index_to_general(self.idx, PUBKEY_3_IDX),
+        )
+        .unwrap();
 
-        let mut buf = [0u8; 48];
+        let mut buf = [0u8; 65];
         buf[0..32].copy_from_slice(&bytes_0[0..32]);
-        buf[32..48].copy_from_slice(&bytes_1[0..16]);
+        buf[32..64].copy_from_slice(&bytes_1[0..32]);
+        buf[64..65].copy_from_slice(&bytes_2[0..1]);
         buf
     }
 
@@ -119,22 +135,28 @@ mod test {
     use arrayref::array_ref;
     use oof::hash::hash;
 
+    #[cfg(feature = "generate")]
     #[test]
     fn test() {
         let a = Account {
             balance: 1,
             nonce: 2,
-            pubkey: [1; 48],
+            pubkey: PublicKey([1; 65]),
         };
 
-        let mut oof = Oof::from_map(a.clone().to_map());
+        let mut oof = Oof::from_map(a.clone().to_tree().into());
         let ptr = RefAccount::new(1, &mut oof as *mut Oof);
 
         assert_eq!(ptr.balance(), a.balance);
         assert_eq!(ptr.nonce(), a.nonce);
-        assert_eq!(ptr.pubkey()[..], a.pubkey[..]);
+        assert_eq!(ptr.pubkey()[..], a.pubkey.0[..]);
 
-        let four = hash(array_ref![a.pubkey, 0, 32], &make_value(&a.pubkey[32..48]));
+        let eight = hash(
+            array_ref![a.pubkey.0, 0, 32],
+            array_ref![a.pubkey.0, 32, 32],
+        );
+        let nine = hash(&make_value(&a.pubkey.0[64..65]), &[0; 32]);
+        let four = hash(&eight, &nine);
         let two = hash(&four, &make_value(&a.balance.to_le_bytes()));
         let three = hash(&make_value(&a.nonce.to_le_bytes()), &[0; 32]);
         let one = hash(&two, &three);

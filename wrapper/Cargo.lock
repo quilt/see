@@ -2,7 +2,8 @@
 # It is not intended for manual editing.
 [[package]]
 name = "arborist"
-version = "0.0.4"
+version = "0.0.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "arrayref 0.3.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "bonsai 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -77,6 +78,7 @@ dependencies = [
 name = "interface"
 version = "0.1.0"
 dependencies = [
+ "arborist 0.0.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "arrayref 0.3.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "bonsai 0.2.1",
  "oof 0.1.0",
@@ -101,7 +103,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "proof"
 version = "0.1.0"
 dependencies = [
- "arborist 0.0.4",
+ "arborist 0.0.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "bonsai 0.2.1",
  "oof 0.1.0",
 ]
@@ -126,11 +128,14 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "wrapper"
 version = "0.1.0"
 dependencies = [
+ "arrayref 0.3.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "interface 0.1.0",
+ "oof 0.1.0",
  "proof 0.1.0",
 ]
 
 [metadata]
+"checksum arborist 0.0.5 (registry+https://github.com/rust-lang/crates.io-index)" = "adddf65bb1d58c5d8867702fb5613a49bcea0e2a44e9dfdaf24688f67eced0cc"
 "checksum arrayref 0.3.5 (registry+https://github.com/rust-lang/crates.io-index)" = "0d382e583f07208808f6b1249e60848879ba3543f57c32277bf52d69c2f0f0ee"
 "checksum block-buffer 0.7.3 (registry+https://github.com/rust-lang/crates.io-index)" = "c0940dc441f31689269e10ac70eb1002a3a1d3ad1390e030043662eb7fe4688b"
 "checksum block-padding 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)" = "fa79dedbb091f449f1f39e53edf88d5dbe95f895dae6135a8d7b881fb5af73f5"
