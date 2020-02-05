@@ -7,7 +7,7 @@ use interface::{
 };
 use proof::{
     number::{Number, U4},
-    List,
+    reflist::RefList,
 };
 
 #[no_mangle]
@@ -15,7 +15,7 @@ pub extern "C" fn main() {}
 
 pub fn entry(blob: &mut [u8], pre: [u8; 32]) {
     let mut blob = RawBlob::new(blob);
-    let mut db = List::<RefAccount, U4>::from_raw(blob.raw_proof());
+    let mut db = RefList::<RefAccount, U4>::from_raw(blob.raw_proof());
     db.verify(&pre);
 
     let txs = blob.transactions();
@@ -30,7 +30,7 @@ pub fn entry(blob: &mut [u8], pre: [u8; 32]) {
     }
 }
 
-fn process_tx<N: Number>(db: &mut List<Account, N>, tx: &Transaction) -> Error {
+fn process_tx<N: Number>(db: &mut RefList<RefAccount, N>, tx: &Transaction) -> Error {
     tx.verify();
     let mut to = db.get_mut(tx.to.into());
     let mut from = db.get_mut(tx.from.into());

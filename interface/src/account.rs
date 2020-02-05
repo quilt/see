@@ -1,7 +1,7 @@
 use crate::crypto::PublicKey;
 use bonsai::subtree_index_to_general;
 use oof::Oof;
-use proof::RefNode;
+use proof::reflist::RefNode;
 
 #[cfg(feature = "generate")]
 use proof::Provable;
