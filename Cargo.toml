@@ -5,8 +5,11 @@ authors = ["Matt Garnett <matt.garnett@me.com>"]
 edition = "2018"
 
 [dependencies]
+wrapper = { path = "wrapper" }
+ease = { git = "https://github.com/jrhea/ease", branch = "engine" }
 bonsai = { path = "../bonsai", default-features = false, features = ["u128"] }
 interface = { path = "interface" }
 oof = { path = "../oof" }
 proof = { path = "proof" }
+arrayref = "0.3.5"
 

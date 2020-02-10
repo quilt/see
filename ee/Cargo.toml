@@ -1,0 +1,10 @@
+[package]
+name = "ee"
+version = "0.1.0"
+edition = "2018"
+
+[dependencies]
+bonsai = { path = "../../bonsai", default-features = false, features = ["u128"] }
+interface = { path = "../interface" }
+oof = { path = "../../oof" }
+proof = { path = "../proof" }

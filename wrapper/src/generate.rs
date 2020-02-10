@@ -1,5 +1,13 @@
 use interface::{Account, Address, Transaction};
-use proof::{number::Number, List};
+use proof::{number::Number, list::List};
+
+pub fn ee_code() -> Vec<u8> {
+    let ret = include_bytes!(concat!(
+        env!("OUT_DIR"),
+        "/wasm32-unknown-unknown/debug/ee.wasm"
+    ));  // TODO: remove hardcoded path to debug
+    ret.to_vec()
+}
 
 pub fn transfer(to: Address, from: Address, amount: u64, nonce: u64) -> Vec<u8> {
     Transaction {
@@ -13,7 +21,7 @@ pub fn transfer(to: Address, from: Address, amount: u64, nonce: u64) -> Vec<u8> 
     .to_vec()
 }
 
-pub fn state_with_accounts<N: Number>(accounts: Vec<Account>) -> List<Account, N> {
+pub fn build_state<N: Number>(accounts: Vec<Account>) -> List<Account, N> {
     let mut list = List::new();
 
     for account in accounts {
@@ -61,7 +69,7 @@ mod test {
             pubkey: PublicKey::new(*array_ref![two_pk, 0, 65]),
         };
 
-        let state = state_with_accounts::<U2>(vec![one.clone(), two.clone()]);
+        let state = build_state::<U2>(vec![one.clone(), two.clone()]);
 
         let forty = hash(
             array_ref![one.pubkey.as_bytes(), 0, 32],
@@ -90,3 +98,4 @@ mod test {
         assert_eq!(state.to_proof().root(), Ok(&one));
     }
 }
+
