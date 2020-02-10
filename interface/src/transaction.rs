@@ -6,7 +6,7 @@ use arrayref::array_ref;
 use core::mem::{size_of, transmute, transmute_copy};
 
 const TX_LEN: usize = size_of::<Transaction>();
-const SIGNATURE_LEN: usize = 96;
+pub const SIGNATURE_LEN: usize = 96;
 
 #[repr(packed)]
 pub struct Transaction {
