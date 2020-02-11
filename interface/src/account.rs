@@ -4,7 +4,7 @@ use oof::Oof;
 use proof::reflist::RefNode;
 
 #[cfg(feature = "generate")]
-use proof::Provable;
+use proof::list::Provable;
 
 #[cfg(feature = "generate")]
 use arborist::Tree;
