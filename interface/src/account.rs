@@ -70,7 +70,7 @@ impl RefAccount {
 
     pub fn set_balance(&mut self, balance: u64) {
         let mut buf = [0u8; 32];
-        buf.copy_from_slice(&balance.to_le_bytes());
+        buf[0..8].copy_from_slice(&balance.to_le_bytes());
         Oof::set(unsafe { &mut *self.backend }, self.balance_key(), buf);
     }
 
@@ -84,7 +84,7 @@ impl RefAccount {
     pub fn inc_nonce(&mut self) {
         let nonce = self.nonce() + 1;
         let mut buf = [0u8; 32];
-        buf.copy_from_slice(&nonce.to_le_bytes());
+        buf[0..8].copy_from_slice(&nonce.to_le_bytes());
         Oof::set(unsafe { &mut *self.backend }, self.nonce_key(), buf);
     }
 

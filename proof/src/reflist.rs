@@ -32,7 +32,7 @@ impl<T: RefNode, N: Number> RefList<T, N> {
 
     pub fn get_mut(&mut self, idx: Index) -> T {
         T::new(
-            first_leaf(1, N::val() as u128) + idx,
+            first_leaf(1, N::val() as u128) + idx + 1,
             (&mut self.backend) as *mut Oof,
         )
     }
