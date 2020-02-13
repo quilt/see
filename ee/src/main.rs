@@ -17,7 +17,6 @@ mod native {
         pub fn eth2_blockDataSize() -> u32;
         pub fn eth2_blockDataCopy(outputOfset: *const u32, offset: u32, length: u32);
         pub fn eth2_savePostStateRoot(offset: *const u32);
-        pub fn print(output: *const u32, outputLength: u32);
     }
 }
 
@@ -41,25 +40,21 @@ pub extern "C" fn main() {
     unsafe { native::eth2_savePostStateRoot(post_root.as_ptr() as *const u32) }
 }
 
-pub fn entry(blob: &mut [u8], pre: [u8; 32]) -> [u8; 32] {
+pub fn entry(blob: &mut [u8], pre: &[u8; 32]) -> [u8; 32] {
     let mut blob = RawBlob::new(blob);
-    let mut db = RefList::<RefAccount, U4>::from_raw(blob.raw_proof());
+    let mut db = RefList::<RefAccount, U2>::from_raw(blob.raw_proof());
     db.verify(&pre);
 
     let txs = blob.transactions();
 
     for tx in txs {
-        process_tx(&mut db, &tx);
-       /* db.begin();
-
+       db.begin();
         match process_tx(&mut db, &tx) {
-            OK => db.commit(),
+            OK => (),
             _ => db.rollback(),
-        }*/
+        }
     }
-    //*db.root().unwrap()
-    let root = [1u8; 32];
-    root
+    *db.root().unwrap()
 }
 
 fn process_tx<N: Number>(db: &mut RefList<RefAccount, N>, tx: &Transaction) -> Error {

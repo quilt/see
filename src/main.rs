@@ -6,7 +6,7 @@ use proof::number::U2;
 use oof::Oof;
 
 use interface::{
-    error::{Error, OK},
+    error::{Error, OK, ERR},
     RawBlob, RefAccount, Transaction,
     Account, Address, PublicKey, 
     SIGNATURE_LEN
@@ -25,7 +25,6 @@ use byteorder::{ByteOrder, LittleEndian, WriteBytesExt};
 /// This is the entry point when compiled as an executable binary.
 pub fn main() {
 
-
     // build initial state
     let mut one_pk = vec![0; 49];
     let mut two_pk = vec![0; 49];
@@ -43,6 +42,7 @@ pub fn main() {
         nonce: 2,
         pubkey: PublicKey::new(*array_ref![two_pk, 0, 65]),
     };
+
     let initial_state = build_state::<U2>(vec![zero.clone(), one.clone()]);
     let mut initial_state_proof = build_state::<U2>(vec![zero.clone(), one.clone()]).to_proof();
 
@@ -64,18 +64,18 @@ pub fn main() {
     // Process input data
     let post_state_root = entry(&mut input, array_ref![pre_state_root, 0, 32]);
 
-    //assert_eq!(post_root, *array_ref![post_state_root, 0, 32]);
-
-    println!("pre_state_root  => {:?}", hex::encode(pre_state_root));
-    println!("post_state_root => {:?}", hex::encode(post_state_root));
-
+    //calc the expected state root
     zero.balance += 1;
     one.balance -= 1;
     one.nonce += 1;
     let expected_state = build_state::<U2>(vec![zero.clone(), one.clone()]);
-    let mut expected_proof = expected_state.to_proof();
-    let expected_root = expected_proof.root().unwrap();
-    println!("expected_state_root => {:?}", hex::encode(expected_root));
+    let mut expected_state_proof = expected_state.to_proof();
+    let expected_state_root = expected_state_proof.root().unwrap();
+
+    println!("pre_state_root  => {:?}", hex::encode(pre_state_root));
+    println!("post_state_root => {:?}", hex::encode(post_state_root));
+    println!("expected_state_root => {:?}", hex::encode(expected_state_root));
+    assert_eq!(expected_state_root, array_ref![post_state_root, 0, 32]);
 }
 
 pub fn entry(blob: &mut [u8], pre: &[u8; 32]) -> [u8; 32] {
@@ -86,14 +86,11 @@ pub fn entry(blob: &mut [u8], pre: &[u8; 32]) -> [u8; 32] {
     let txs = blob.transactions();
 
     for tx in txs {
-        process_tx(&mut db, &tx);
-
-       /* db.begin();
-
+       db.begin();
         match process_tx(&mut db, &tx) {
-            OK => db.commit(),
+            OK => (),
             _ => db.rollback(),
-        }*/
+        }
     }
     *db.root().unwrap()
 }
