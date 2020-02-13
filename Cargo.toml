@@ -5,11 +5,13 @@ authors = ["Matt Garnett <matt.garnett@me.com>"]
 edition = "2018"
 
 [dependencies]
+ewasm = "0.2.3"
 wrapper = { path = "wrapper" }
-ease = { git = "https://github.com/jrhea/ease", branch = "engine" }
+ease = { path = "../ease" }
 bonsai = { path = "../bonsai", default-features = false, features = ["u128"] }
 interface = { path = "interface" }
 oof = { path = "../oof" }
 proof = { path = "proof" }
 arrayref = "0.3.5"
-
+hex = "0.3.2"
+byteorder = "1.3.4"

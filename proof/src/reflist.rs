@@ -48,6 +48,11 @@ impl<T: RefNode, N: Number> RefList<T, N> {
     pub fn rollback(&mut self) {
         todo!()
     }
+
+    pub fn root(&mut self) -> Result<&[u8; 32], oof::Error>
+    {
+        self.backend.root()
+    }
 }
 
 pub trait RefNode {
