@@ -45,10 +45,6 @@ pub fn main() {
     };
     let initial_state = build_state::<U2>(vec![zero.clone(), one.clone()]);
     let mut initial_state_proof = build_state::<U2>(vec![zero.clone(), one.clone()]).to_proof();
-    let initial_state_root = initial_state_proof.root().unwrap();
-
-    let keys = initial_state_proof.keys();
-    println!("keys: {:?}",keys);
 
     // create a tx
     let tx = Transaction {
@@ -72,6 +68,14 @@ pub fn main() {
 
     println!("pre_state_root  => {:?}", hex::encode(pre_state_root));
     println!("post_state_root => {:?}", hex::encode(post_state_root));
+
+    zero.balance += 1;
+    one.balance -= 1;
+    one.nonce += 1;
+    let expected_state = build_state::<U2>(vec![zero.clone(), one.clone()]);
+    let mut expected_proof = expected_state.to_proof();
+    let expected_root = expected_proof.root().unwrap();
+    println!("expected_state_root => {:?}", hex::encode(expected_root));
 }
 
 pub fn entry(blob: &mut [u8], pre: &[u8; 32]) -> [u8; 32] {
@@ -83,6 +87,7 @@ pub fn entry(blob: &mut [u8], pre: &[u8; 32]) -> [u8; 32] {
 
     for tx in txs {
         process_tx(&mut db, &tx);
+
        /* db.begin();
 
         match process_tx(&mut db, &tx) {
