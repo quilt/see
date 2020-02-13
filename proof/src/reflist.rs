@@ -7,6 +7,7 @@ use oof::Oof;
 
 pub struct RefList<T: RefNode, N: Number> {
     backend: Oof,
+    temp: Oof,
     _t: PhantomData<T>,
     _n: PhantomData<N>,
 }
@@ -15,6 +16,7 @@ impl<T: RefNode, N: Number> RefList<T, N> {
     pub fn from_raw(bytes: &mut [u8]) -> Self {
         Self {
             backend: unsafe { Oof::from_raw(bytes.as_mut_ptr()) },
+            temp: Oof::new(Default::default(),Default::default()),
             _t: PhantomData,
             _n: PhantomData,
         }
@@ -38,15 +40,11 @@ impl<T: RefNode, N: Number> RefList<T, N> {
     }
 
     pub fn begin(&mut self) {
-        todo!()
-    }
-
-    pub fn commit(&mut self) {
-        todo!()
+        self.temp = Oof::from_map(self.backend.map.clone());
     }
 
     pub fn rollback(&mut self) {
-        todo!()
+        self.backend = Oof::from_map(self.temp.map.clone());
     }
 
     pub fn root(&mut self) -> Result<&[u8; 32], oof::Error>
