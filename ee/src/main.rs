@@ -6,7 +6,7 @@ use interface::{
     RawBlob, RefAccount, Transaction,
 };
 use proof::{
-    number::{Number, U4},
+    number::{Number, U2},
     reflist::RefList,
 };
 use oof::Oof;
@@ -35,7 +35,7 @@ pub extern "C" fn main() {
     unsafe { native::eth2_loadPreStateRoot(pre_state_root.as_mut_ptr() as *const u32) }
 
     // Process input data
-    let post_root = entry(&mut input, pre_state_root);
+    let post_root = entry(&mut input, &pre_state_root);
     // Return post state
     unsafe { native::eth2_savePostStateRoot(post_root.as_ptr() as *const u32) }
 }

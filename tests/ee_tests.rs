@@ -50,12 +50,17 @@ fn test() {
     // execute tx on node
     engine.run(index, txs);
     // get resulting state root
-    let root = engine.get_root(index);
+    let post_state_root = engine.get_root(index);
     // calculate expected root
     zero.balance += 1;
     one.balance -= 1;
+    one.nonce += 1;
     let expected_state = build_state::<U2>(vec![zero.clone(), one.clone()]);
-    let mut expected_proof = expected_state.to_proof();
-    let expected_root = expected_proof.root();
-    assert_eq!(Ok(&root), expected_root);
+    let mut expected_stare_proof = expected_state.to_proof();
+    let expected_state_root = *expected_stare_proof.root().unwrap();
+
+    println!("initial_state_root  => {:?}", hex::encode(initial_state_root));
+    println!("post_state_root => {:?}", hex::encode(post_state_root));
+    println!("expected_state_root => {:?}", hex::encode(expected_state_root));
+    assert_eq!(post_state_root, expected_state_root);
 }
