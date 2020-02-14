@@ -3,6 +3,11 @@ name = "ee"
 version = "0.1.0"
 edition = "2018"
 
+[lib]
+name = "ee"
+crate-type = ["cdylib", "lib"]
+path = "src/main.rs"
+
 [dependencies]
 bonsai = { git = "https://github.com/lightclient/bonsai.git", branch="master", default-features = false, features = ["u128"] }
 oof = "0.1.1"

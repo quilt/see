@@ -41,7 +41,7 @@ fn test() {
     let tx = transfer(Address::zero(), Address::one(), 1, 3);
 
     // execute tx on node
-    engine.run(index, vec![tx]);
+    engine.run(index, tx, 1);
 
     // get resulting state root
     let post_state_root = engine.get_root(index);
