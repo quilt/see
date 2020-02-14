@@ -46,10 +46,6 @@ source = "git+https://github.com/lightclient/bonsai.git#cf749e4f4511a61895c541a3
 [[package]]
 name = "bonsai"
 version = "0.2.1"
-
-[[package]]
-name = "bonsai"
-version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "75626b995897e05ccab67cc1813eac867dba40bccf7a27179a2fba5d1bfbc1e4"
 
@@ -78,7 +74,7 @@ dependencies = [
 name = "ee"
 version = "0.1.0"
 dependencies = [
- "bonsai 0.2.1",
+ "bonsai 0.2.1 (git+https://github.com/lightclient/bonsai.git)",
  "interface",
  "oof",
  "proof",
@@ -104,17 +100,19 @@ name = "interface"
 version = "0.1.0"
 dependencies = [
  "arrayref",
- "bonsai 0.2.1",
+ "bonsai 0.2.1 (git+https://github.com/lightclient/bonsai.git)",
  "oof",
  "proof",
 ]
 
 [[package]]
 name = "oof"
-version = "0.1.0"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b60936e6de2cb301b22283646e78fd8a0f92fa97ff53f33a3367e8a8b2be17ad"
 dependencies = [
  "arrayref",
- "bonsai 0.2.1 (git+https://github.com/lightclient/bonsai.git)",
+ "bonsai 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "sha2",
 ]
 
@@ -129,7 +127,7 @@ name = "proof"
 version = "0.1.0"
 dependencies = [
  "arborist",
- "bonsai 0.2.1",
+ "bonsai 0.2.1 (git+https://github.com/lightclient/bonsai.git)",
  "oof",
 ]
 
