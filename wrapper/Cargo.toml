@@ -11,4 +11,4 @@ interface = { path = "../interface", features = ["generate"] }
 proof = { path = "../proof", features = ["generate"] }
 
 [dev-dependencies]
-oof = { path = "../../oof" }
+oof = "0.1.1"

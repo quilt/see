@@ -1,12 +1,11 @@
 extern crate ease;
-use ease::engine::Engine;
-use interface::{Account, Address, Transaction, PublicKey, SIGNATURE_LEN};
-use wrapper::generate::{build_state, ee_code, transfer};
-use proof::number::U2;
-use oof::Oof;
-use proof::reflist::RefNode;
 use arrayref::array_ref;
-
+use ease::engine::Engine;
+use interface::{Account, Address, PublicKey, Transaction, SIGNATURE_LEN};
+use oof::Oof;
+use proof::number::U2;
+use proof::reflist::RefNode;
+use wrapper::generate::{build_state, ee_code, transfer};
 
 #[test]
 fn test() {
@@ -37,7 +36,11 @@ fn test() {
     // get generated ee wasm code
     let code = ee_code();
     // deploy code with state
-    let index = engine.deploy(code, initial_state.to_proof().to_bytes(), *initial_state_root);
+    let index = engine.deploy(
+        code,
+        initial_state.to_proof().to_bytes(),
+        *initial_state_root,
+    );
     // create a tx
     let tx = Transaction {
         to: Address::zero(),
@@ -45,7 +48,9 @@ fn test() {
         nonce: 3,
         amount: 1,
         signature: [5; SIGNATURE_LEN],
-    }.to_bytes().to_vec();
+    }
+    .to_bytes()
+    .to_vec();
     let txs = vec![tx; 1];
     // execute tx on node
     engine.run(index, txs);
@@ -59,8 +64,14 @@ fn test() {
     let mut expected_stare_proof = expected_state.to_proof();
     let expected_state_root = *expected_stare_proof.root().unwrap();
 
-    println!("initial_state_root  => {:?}", hex::encode(initial_state_root));
+    println!(
+        "initial_state_root  => {:?}",
+        hex::encode(initial_state_root)
+    );
     println!("post_state_root => {:?}", hex::encode(post_state_root));
-    println!("expected_state_root => {:?}", hex::encode(expected_state_root));
+    println!(
+        "expected_state_root => {:?}",
+        hex::encode(expected_state_root)
+    );
     assert_eq!(post_state_root, expected_state_root);
 }

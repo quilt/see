@@ -1,30 +1,20 @@
+use wrapper::generate::{build_state};
 
-
-
-use wrapper::generate::{build_state, ee_code, transfer};
-use proof::number::U2;
-use oof::Oof;
-
+use arrayref::array_ref;
 use interface::{
-    error::{Error, OK, ERR},
-    RawBlob, RefAccount, Transaction,
-    Account, Address, PublicKey, 
-    SIGNATURE_LEN
+    error::{Error, OK},
+    Account, Address, PublicKey, RawBlob, RefAccount, Transaction, SIGNATURE_LEN,
 };
 use proof::{
-    number::{Number, U4},
+    number::{Number, U2},
     reflist::RefList,
-    reflist::RefNode
 };
-use std::fs;
-use arrayref::array_ref;
-extern crate byteorder;
-use byteorder::{ByteOrder, LittleEndian, WriteBytesExt};
 
+extern crate byteorder;
+use byteorder::{LittleEndian, WriteBytesExt};
 
 /// This is the entry point when compiled as an executable binary.
 pub fn main() {
-
     // build initial state
     let mut one_pk = vec![0; 49];
     let mut two_pk = vec![0; 49];
@@ -53,14 +43,16 @@ pub fn main() {
         nonce: 3,
         amount: 1,
         signature: [5; SIGNATURE_LEN],
-    }.to_bytes().to_vec();
+    }
+    .to_bytes()
+    .to_vec();
 
     let mut num_tx: Vec<u8> = Vec::new();
     num_tx.write_u32::<LittleEndian>(1).unwrap();
 
     let pre_state_root = initial_state_proof.root().unwrap();
     //let post_state_root = hex::decode(args[1]).unwrap();
-    let mut input = [num_tx.to_vec(),tx,initial_state.to_proof().to_bytes()].concat();
+    let mut input = [num_tx.to_vec(), tx, initial_state.to_proof().to_bytes()].concat();
     // Process input data
     let post_state_root = entry(&mut input, array_ref![pre_state_root, 0, 32]);
 
@@ -68,13 +60,16 @@ pub fn main() {
     zero.balance += 1;
     one.balance -= 1;
     one.nonce += 1;
-    let expected_state = build_state::<U2>(vec![zero.clone(), one.clone()]);
+    let expected_state = build_state::<U2>(vec![zero, one]);
     let mut expected_state_proof = expected_state.to_proof();
     let expected_state_root = expected_state_proof.root().unwrap();
 
     println!("pre_state_root  => {:?}", hex::encode(pre_state_root));
     println!("post_state_root => {:?}", hex::encode(post_state_root));
-    println!("expected_state_root => {:?}", hex::encode(expected_state_root));
+    println!(
+        "expected_state_root => {:?}",
+        hex::encode(expected_state_root)
+    );
     assert_eq!(expected_state_root, array_ref![post_state_root, 0, 32]);
 }
 
@@ -86,7 +81,7 @@ pub fn entry(blob: &mut [u8], pre: &[u8; 32]) -> [u8; 32] {
     let txs = blob.transactions();
 
     for tx in txs {
-       db.begin();
+        db.begin();
         match process_tx(&mut db, &tx) {
             OK => (),
             _ => db.rollback(),

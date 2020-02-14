@@ -7,10 +7,10 @@ edition = "2018"
 [dependencies]
 ewasm = "0.2.3"
 wrapper = { path = "wrapper" }
-ease = { path = "../ease" }
-bonsai = { path = "../bonsai", default-features = false, features = ["u128"] }
+ease = { git = "https://github.com/quilt/ease.git", branch="master" }
+bonsai = { git = "https://github.com/lightclient/bonsai.git", branch="master", default-features = false, features = ["u128"] }
 interface = { path = "interface" }
-oof = { path = "../oof" }
+oof = "0.1.1"
 proof = { path = "proof" }
 arrayref = "0.3.5"
 hex = "0.3.2"
