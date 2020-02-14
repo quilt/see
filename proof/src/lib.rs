@@ -15,6 +15,7 @@ pub mod number {
 
     macro_rules! make_num {
         ($name:ident, $val:expr) => {
+            #[derive(Clone)]
             pub struct $name;
 
             impl Number for $name {

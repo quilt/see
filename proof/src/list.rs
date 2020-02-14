@@ -6,7 +6,7 @@ use bonsai::first_leaf;
 use core::marker::PhantomData;
 use oof::Oof;
 
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct List<T: Provable, N: Number> {
     backend: BTreeMap<Index, T>,
     _t: PhantomData<T>,
